@@ -2,7 +2,8 @@ debug = true
 pig = { x = 200,
         y = 700,
         speed = 15,
-        img = nil
+        img = nil,
+        directions = {up, down, left, right}
       }
 
 function love.load(arg)
@@ -40,12 +41,23 @@ function pig.manual_control(this, dt)
   end
 end
 
+function pig.random_walk(pig, dt)
+  dir = math.random(4)
+  movements = {}
+  movements[0] = function (pig, dt) pig.move_up(pig, dt) end
+  movements[1] = function (pig, dt) pig.move_down(pig, dt) end
+  movements[2] = function (pig, dt) pig.move_left(pig, dt) end
+  movements[3] = function (pig, dt) pig.move_right(pig, dt) end
+  movements[ math.random( #movements ) ](pig, dt)
+end
+
 function love.update(dt)
   if love.keyboard.isDown('escape') then
     love.event.push('quit')
   end
 
   pig.manual_control(pig, dt)
+  pig.random_walk(pig, dt)
 end
 
 function love.draw(dt)
